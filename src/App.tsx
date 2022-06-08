@@ -51,6 +51,7 @@ import { generateEmojiGrid, getEmojiTiles } from './lib/share'
 import { useMatch } from 'react-router-dom'
 import { getWordBySolutionIndex } from './lib/words'
 import { exampleIds } from './constants/exampleIds'
+import { CaesarSlider } from './components/CaesarSlider'
 
 function App() {
   const isPlayingDaily = useMatch('/') !== null
@@ -228,6 +229,8 @@ function App() {
     }
   }, [isGameWon, isGameLost, showSuccessAlert])
 
+  const [shiftAmt, setShiftAmt] = useState(0)
+
   const onChar = (value: string) => {
     if (
       unicodeLength(`${currentGuess}${value}`) <= solution.length &&
@@ -375,6 +378,7 @@ function App() {
         setIsSettingsModalOpen={setIsSettingsModalOpen}
       />
       <div className="pt-2 px-1 pb-8 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
+        <CaesarSlider setShiftAmt={setShiftAmt} />
         <div className="pb-6 grow">
           <Grid
             solution={solution}
@@ -391,6 +395,7 @@ function App() {
           solution={solution}
           guesses={guesses}
           isRevealing={isRevealing}
+          shiftAmt={shiftAmt}
         />
         <InfoModal
           isOpen={isInfoModalOpen}

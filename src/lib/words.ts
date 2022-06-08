@@ -3,26 +3,33 @@ import { VALID_GUESSES } from '../constants/validGuesses'
 import { WRONG_SPOT_MESSAGE, NOT_CONTAINED_MESSAGE } from '../constants/strings'
 import { getGuessStatuses } from './statuses'
 import { default as GraphemeSplitter } from 'grapheme-splitter'
-// import { isValidKey } from '../components/keyboard/Keyboard'
+
+const getWords = (wordlist: { solution: string }[]) => {
+  return wordlist.map(wordObj => wordObj.solution)
+}
 
 export const isWordInWordList = (word: string) => {
-  return (
-    VALID_GUESSES.includes(localeAwareLowerCase(word))
-  )
+  // VALID_GUESSES.includes(localeAwareLowerCase(word))
+  const shiftAmts = Array.from(Array(ALPHA_SIZE).keys());
+  return shiftAmts.some((shiftAmt) => VALID_GUESSES.includes(localeAwareLowerCase(caesarShift(word, shiftAmt))))
 }
 
-/*
-export const isWordInWordList = (word: string) => {
-  return (
-    WORDS.includes(localeAwareLowerCase(word)) ||
-    isValidWord(word, solution)
-  )
-}
+const ALPHA_SIZE = 26
+export const caesarShift = (word: string, shiftAmt: number) => {
+  return unicodeSplit(word).map((char) => {
+    const isLowerLetter = char.toLowerCase() === char && char.toUpperCase() !== char
+    const isUpperLetter = char.toUpperCase() === char && char.toLowerCase() !== char
+    if (!isLowerLetter && !isUpperLetter) {
+      return char
+    }
 
-export const isValidWord = (word: string, solution: string) => {
-  return word.length === solution.length && word.split('').every(isValidKey);
+    const charAscii = char.charCodeAt(0)
+    const baseCharAscii = isUpperLetter ? 'A'.charCodeAt(0) : 'a'.charCodeAt(0)
+    const shiftedCharAscii = (charAscii - baseCharAscii + shiftAmt + ALPHA_SIZE) % ALPHA_SIZE + baseCharAscii
+    return String.fromCharCode(shiftedCharAscii)
+  })
+  .join('')
 }
-*/
 
 export const isWinningWord = (word: string, solution: string) => {
   return word === solution
