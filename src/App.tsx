@@ -27,6 +27,7 @@ import {
   findFirstUnusedReveal,
   unicodeLength,
   solutionIndex as solutionIndexOfDay,
+  caesarShift,
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
@@ -232,12 +233,13 @@ function App() {
   const [shiftAmt, setShiftAmt] = useState(0)
 
   const onChar = (value: string) => {
+    const shiftedValue = caesarShift(value, shiftAmt)
     if (
-      unicodeLength(`${currentGuess}${value}`) <= solution.length &&
+      unicodeLength(`${currentGuess}${shiftedValue}`) <= solution.length &&
       guesses.length < MAX_CHALLENGES &&
       !isGameWon
     ) {
-      setCurrentGuess(`${currentGuess}${value}`)
+      setCurrentGuess(`${currentGuess}${shiftedValue}`)
     }
   }
 
@@ -386,6 +388,7 @@ function App() {
             currentGuess={currentGuess}
             isRevealing={isRevealing}
             currentRowClassName={currentRowClass}
+            shiftAmt={shiftAmt}
           />
         </div>
         <Keyboard

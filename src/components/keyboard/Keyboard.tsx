@@ -60,13 +60,13 @@ export const Keyboard = ({
     <div>
       <div className="flex justify-center mb-1">
         {['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'].map((key) => {
-          const shifted_key = caesarShift(key, shiftAmt)
+          const shiftedKey = caesarShift(key, shiftAmt)
           return (
             <Key
-              value={shifted_key}
-              key={shifted_key}
+              value={key}
+              key={key}
               onClick={onClick}
-              status={charStatuses[shifted_key]}
+              status={charStatuses[shiftedKey]}
               isRevealing={isRevealing}
               solution={solution}
             />
@@ -75,13 +75,13 @@ export const Keyboard = ({
       </div>
       <div className="flex justify-center mb-1">
         {['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'].map((key) => {
-          const shifted_key = caesarShift(key, shiftAmt)
+          const shiftedKey = caesarShift(key, shiftAmt)
           return (
             <Key
-              value={shifted_key}
-              key={shifted_key}
+              value={key}
+              key={key}
               onClick={onClick}
-              status={charStatuses[shifted_key]}
+              status={charStatuses[shiftedKey]}
               isRevealing={isRevealing}
               solution={solution}
             />
@@ -93,13 +93,13 @@ export const Keyboard = ({
           {ENTER_TEXT}
         </Key>
         {['Z', 'X', 'C', 'V', 'B', 'N', 'M'].map((key) => {
-          const shifted_key = caesarShift(key, shiftAmt)
+          const shiftedKey = caesarShift(key, shiftAmt)
           return (
             <Key
-              value={shifted_key}
-              key={shifted_key}
+              value={key}
+              key={key}
               onClick={onClick}
-              status={charStatuses[shifted_key]}
+              status={charStatuses[shiftedKey]}
               isRevealing={isRevealing}
               solution={solution}
             />

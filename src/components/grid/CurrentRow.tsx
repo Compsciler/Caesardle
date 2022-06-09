@@ -1,20 +1,22 @@
 import { Cell } from './Cell'
-import { unicodeSplit } from '../../lib/words'
+import { caesarShift, unicodeSplit } from '../../lib/words'
 
 type Props = {
   guess: string
   solution: string
   className: string
+  shiftAmt: number
 }
 
-export const CurrentRow = ({ guess, solution, className }: Props) => {
-  const splitGuess = unicodeSplit(guess)
-  const emptyCells = Array.from(Array(solution.length - splitGuess.length))
+export const CurrentRow = ({ guess, solution, className, shiftAmt }: Props) => {
+  const unshiftedGuess = caesarShift(guess, -shiftAmt)
+  const splitUnshiftedGuess = unicodeSplit(unshiftedGuess)
+  const emptyCells = Array.from(Array(solution.length - splitUnshiftedGuess.length))
   const classes = `flex justify-center mb-1 ${className}`
 
   return (
     <div className={classes}>
-      {splitGuess.map((letter, i) => (
+      {splitUnshiftedGuess.map((letter, i) => (
         <Cell key={i} value={letter} />
       ))}
       {emptyCells.map((_, i) => (
