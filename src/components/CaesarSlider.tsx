@@ -42,8 +42,10 @@ export const CaesarSlider = ({ setShiftAmt: setCaesarShift }: Props) => {
     setCaesarShift(newValue as number)
   }
 
+  const markClasses = "dark:text-white"
+
   return (
-    <Box sx={{ width: 400 }} m="auto" >
+    <Box sx={{ width: '90%', maxWidth: 400 }} m="auto" >
       <Slider
         aria-label="Caesar shift amount"
         defaultValue={0}
@@ -54,6 +56,7 @@ export const CaesarSlider = ({ setShiftAmt: setCaesarShift }: Props) => {
         min={0}
         max={25}
         onChange={handleChange}
+        classes={{markLabel: markClasses}}
       />
     </Box>
   )

@@ -18,13 +18,14 @@ const hrStyles = {
   margin: 0,
 }
 
-const classes = "flex justify-center mt-4 dark:text-white"
+const classes = "flex justify-center mt-4 ml-2 mr-2 text-center dark:text-white"
 
 export const SolutionText = ({ solution, solutionUnshifted, solutionShiftAmt, isGameComplete }: Props) => {
   const lettersPluralText = solutionShiftAmt === 1 ? 'letter' : 'letters'
   return (
     <Transition.Root show={isGameComplete} style={styles} className={classes}>
-      The word was {solution} ({solutionUnshifted} shifted right by {solutionShiftAmt} {lettersPluralText})
+      The word was {solution} <br />
+      ({solutionUnshifted} shifted right by {solutionShiftAmt} {lettersPluralText})
     </Transition.Root>
   )
 }
