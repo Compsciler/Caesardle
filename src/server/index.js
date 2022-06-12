@@ -13,7 +13,11 @@ mongoose.connect(url)
 const scoreSchema = new mongoose.Schema({
     solutionIndex: Number,
     solution: String,
+    solutionUnshifted: String,
+    solutionShiftAmt: Number,
     guesses: [String],
+    guessesUnshifted: [String],
+    guessShiftAmts: [Number],
     lost: Boolean,
     isHardMode: Boolean,
     emojiGrid: String

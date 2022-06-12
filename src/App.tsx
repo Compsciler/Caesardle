@@ -28,6 +28,8 @@ import {
   unicodeLength,
   solutionIndex as solutionIndexOfDay,
   caesarShift,
+  solutionUnshifted,
+  solutionShiftAmt,
 } from './lib/words'
 import { addStatsForCompletedGame, loadStats } from './lib/stats'
 import {
@@ -53,6 +55,7 @@ import { useMatch } from 'react-router-dom'
 import { getWordBySolutionIndex } from './lib/words'
 import { exampleIds } from './constants/exampleIds'
 import { CaesarSlider } from './components/CaesarSlider'
+import { SolutionText } from './components/gametext/SolutionText'
 
 function App() {
   const isPlayingDaily = useMatch('/') !== null
@@ -93,6 +96,7 @@ function App() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+  const [isSolutionTextOpen, setIsSolutionTextOpen] = useState(false)
   const [currentRowClass, setCurrentRowClass] = useState('')
   const [isGameLost, setIsGameLost] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(
@@ -106,6 +110,9 @@ function App() {
     getStoredIsHighContrastMode()
   )
   const [isRevealing, setIsRevealing] = useState(false)
+
+  const [guessesUnshifted, setGuessesUnshifted] = useState<string[]>([])
+  const [guessShiftAmts, setGuessShiftAmts] = useState<number[]>([])
 
   const [guessesOfDay, setGuessesOfDay] = useState<string[]>(() => {
     const loaded = loadGameOfDayStateFromLocalStorage()
@@ -127,13 +134,17 @@ function App() {
     const gameWasWon = loaded.guesses.includes(solution)
     if (gameWasWon) {
       setIsGameWon(true)
+      setIsSolutionTextOpen(true)
     }
     if (loaded.guesses.length === MAX_CHALLENGES && !gameWasWon) {
       setIsGameLost(true)
       showErrorAlert(CORRECT_WORD_MESSAGE(solution), {
         persist: true,
       })
+      setIsSolutionTextOpen(true)
     }
+    setGuessesUnshifted(loaded.guessesUnshifted)
+    setGuessShiftAmts(loaded.guessShiftAmts)
     return loaded.guesses
   })
 
@@ -202,20 +213,30 @@ function App() {
   }
 
   useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution })
+    saveGameStateToLocalStorage({
+      guesses,
+      guessesUnshifted,
+      guessShiftAmts,
+      solution,
+    })
   }, [guesses])
   useEffect(() => {
     if (!isPlayingDaily) {
       return
     }
-    saveGameOfDayStateToLocalStorage({ guesses, solution })
+    saveGameOfDayStateToLocalStorage({
+      guesses,
+      guessesUnshifted,
+      guessShiftAmts,
+      solution,
+    })
   }, [guessesOfDay])
 
   useEffect(() => {
+    const delayMs = REVEAL_TIME_MS * solution.length
     if (isGameWon) {
       const winMessage =
         WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-      const delayMs = REVEAL_TIME_MS * solution.length
 
       showSuccessAlert(winMessage, {
         delayMs,
@@ -227,6 +248,12 @@ function App() {
       setTimeout(() => {
         setIsStatsModalOpen(true)
       }, (solution.length + 1) * REVEAL_TIME_MS)
+    }
+
+    if (isGameWon || isGameLost) {
+      setTimeout(() => {
+        setIsSolutionTextOpen(true)
+      }, delayMs)
     }
   }, [isGameWon, isGameLost, showSuccessAlert])
 
@@ -272,6 +299,7 @@ function App() {
     if (isHardMode) {
       const firstMissingReveal = findFirstUnusedReveal(
         currentGuess,
+        shiftAmt,
         guesses,
         solution
       )
@@ -300,12 +328,19 @@ function App() {
       !isGameWon
     ) {
       const guessesIncludingCurrent = guesses.concat(currentGuess)
+      const currentGuessUnshifted = caesarShift(currentGuess, -shiftAmt)
+      const guessesUnshiftedIncludingCurrent = guessesUnshifted.concat(
+        currentGuessUnshifted
+      )
+      const guessShiftAmtsIncludingCurrent = guessShiftAmts.concat(shiftAmt)
 
       setGuesses([...guesses, currentGuess])
       if (isPlayingDaily) {
         setGuessesOfDay([...guesses, currentGuess])
       }
       setCurrentGuess('')
+      setGuessesUnshifted([...guessesUnshifted, currentGuessUnshifted])
+      setGuessShiftAmts([...guessShiftAmts, shiftAmt])
 
       if (winningWord) {
         if (!isPlayingExample) {
@@ -314,7 +349,11 @@ function App() {
         sendScore(
           solutionIndex,
           solution,
+          solutionUnshifted,
+          solutionShiftAmt,
           guessesIncludingCurrent,
+          guessesUnshiftedIncludingCurrent,
+          guessShiftAmtsIncludingCurrent,
           false,
           isHardMode
         )
@@ -328,7 +367,11 @@ function App() {
         sendScore(
           solutionIndex,
           solution,
+          solutionUnshifted,
+          solutionShiftAmt,
           guessesIncludingCurrent,
+          guessesUnshifted,
+          guessShiftAmts,
           true,
           isHardMode
         )
@@ -344,7 +387,11 @@ function App() {
   const sendScore = (
     solutionIndex: number,
     solution: string,
+    solutionUnshifted: string,
+    solutionShiftAmt: number,
     guesses: string[],
+    guessesUnshifted: string[],
+    guessShiftAmts: number[],
     lost: boolean,
     isHardMode: boolean
   ) => {
@@ -353,7 +400,11 @@ function App() {
     const scoreObject = {
       solutionIndex,
       solution,
+      solutionUnshifted,
+      solutionShiftAmt,
       guesses,
+      guessesUnshifted,
+      guessShiftAmts,
       lost,
       isHardMode,
       emojiGrid,
@@ -379,8 +430,8 @@ function App() {
         setIsStatsModalOpen={setIsStatsModalOpen}
         setIsSettingsModalOpen={setIsSettingsModalOpen}
       />
+      <CaesarSlider setShiftAmt={setShiftAmt} />
       <div className="pt-2 px-1 pb-8 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
-        <CaesarSlider setShiftAmt={setShiftAmt} />
         <div className="pb-6 grow">
           <Grid
             solution={solution}
@@ -389,6 +440,12 @@ function App() {
             isRevealing={isRevealing}
             currentRowClassName={currentRowClass}
             shiftAmt={shiftAmt}
+          />
+          <SolutionText
+            solution={solution}
+            solutionUnshifted={solutionUnshifted}
+            solutionShiftAmt={solutionShiftAmt}
+            isGameComplete={isSolutionTextOpen}
           />
         </div>
         <Keyboard

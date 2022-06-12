@@ -42,7 +42,7 @@ export const isWinningWordOfDay = (word: string) => {
 // build a set of previously revealed letters - present and correct
 // guess must use correct letters in that space and any other revealed letters
 // also check if all revealed instances of a letter are used (i.e. two C's)
-export const findFirstUnusedReveal = (word: string, guesses: string[], solution: string) => {
+export const findFirstUnusedReveal = (word: string, shiftAmt: number, guesses: string[], solution: string) => {
   if (guesses.length === 0) {
     return false
   }
@@ -58,7 +58,7 @@ export const findFirstUnusedReveal = (word: string, guesses: string[], solution:
       lettersLeftArray.push(splitGuess[i])
     }
     if (statuses[i] === 'correct' && splitWord[i] !== splitGuess[i]) {
-      return WRONG_SPOT_MESSAGE(splitGuess[i], i + 1)
+      return WRONG_SPOT_MESSAGE(caesarShift(splitGuess[i], -shiftAmt), i + 1)
     }
   }
 
@@ -73,7 +73,7 @@ export const findFirstUnusedReveal = (word: string, guesses: string[], solution:
   }
 
   if (lettersLeftArray.length > 0) {
-    return NOT_CONTAINED_MESSAGE(lettersLeftArray[0])
+    return NOT_CONTAINED_MESSAGE(caesarShift(lettersLeftArray[0], -shiftAmt))
   }
   return false
 }
@@ -102,11 +102,15 @@ export const getWordBySolutionIndex = (solutionIndex: number) => {
   if (solutionIndex < 0 || solutionIndex >= WORDS.length) {
     return {
       solution: '',
+      solutionUnshifted: '',
+      solutionShiftAmt: -1,
       solutionIndex: -1
     }
   }
   return {
-    solution: localeAwareUpperCase(WORDS[solutionIndex]),
+    solution: localeAwareUpperCase(WORDS[solutionIndex].solution),
+    solutionUnshifted: localeAwareUpperCase(WORDS[solutionIndex].solutionUnshifted),
+    solutionShiftAmt: WORDS[solutionIndex].shiftAmount,
     solutionIndex: solutionIndex,
   }
 }
@@ -126,13 +130,16 @@ export const getWordOfDay = () => {
   const nextDay = new Date(today)
   nextDay.setDate(today.getDate() + 1)
 
-  const solutionAndIndex = getWordBySolutionIndex(index % WORDS.length)
+  const offset = -2
+  const solutionAndIndex = getWordBySolutionIndex((index + offset) % WORDS.length)
 
   return {
     solution: solutionAndIndex.solution,
+    solutionUnshifted: solutionAndIndex.solutionUnshifted,
+    solutionShiftAmt: solutionAndIndex.solutionShiftAmt,
     solutionIndex: solutionAndIndex.solutionIndex,
     tomorrow: nextDay.valueOf(),
   }
 }
 
-export const { solution, solutionIndex, tomorrow } = getWordOfDay()
+export const { solution, solutionIndex, solutionUnshifted, solutionShiftAmt, tomorrow } = getWordOfDay()

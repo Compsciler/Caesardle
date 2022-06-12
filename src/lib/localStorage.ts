@@ -4,6 +4,8 @@ const highContrastKey = 'highContrast'
 
 type StoredGameState = {
   guesses: string[]
+  guessesUnshifted: string[]
+  guessShiftAmts: number[]
   solution: string
 }
 
