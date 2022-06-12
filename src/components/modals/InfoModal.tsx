@@ -51,7 +51,8 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
         <Cell value="Y" />
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
-        The letter W is in the word and in the correct spot.
+        The letter W is in the word and in the correct spot. <br />
+        &#8203;
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
@@ -68,7 +69,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
         The letter Q is in the word but in the wrong spot. <br />
-        (XQTTA is PILLS shifted right by 18 letters.)
+        (XQTTA is PILLS shifted right by 8 letters.)
       </p>
 
       <div className="flex justify-center mb-1 mt-4">
@@ -80,7 +81,7 @@ export const InfoModal = ({ isOpen, handleClose }: Props) => {
       </div>
       <p className="text-sm text-gray-500 dark:text-gray-300">
         The letter A is not in the word in any spot. <br />
-        (BGMAK is VAGUE shifted right by 20 letters.)
+        (BGMAK is VAGUE shifted right by 6 letters.)
       </p>
 
       <p className="mt-6 italic text-sm text-gray-500 dark:text-gray-300">
