@@ -19,6 +19,6 @@ Moving the slider helps you focus on or rule out potential shift values for the 
 The colors on the keyboard will reflect the tile colors of the current shift value. 
 <strong>Your guess must be a valid word in at least one shift value.</strong>
 
-[**Play the daily game here!**](https://rebrand.ly/caesardle)
+[**Play the daily game here!**](https://caesardle.herokuapp.com/)
 
 This is one of the Wordle variants I have made. The other games and instructions for creating your own Wordle variant can be found [here](https://github.com/Compsciler/Wordle-With-Score-Database/).
