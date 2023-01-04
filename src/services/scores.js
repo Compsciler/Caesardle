@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'https://caesardle.herokuapp.com/api/scores'
+const baseUrl = ''//'https://caesardle.herokuapp.com/api/scores'
 
 /*
 const getAll = () => {
@@ -20,5 +20,5 @@ const update = (id, newObject) => {
 }
 */
 
-const scoreService = {create}
+const scoreService = { create }
 export default scoreService
