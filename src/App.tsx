@@ -525,8 +525,15 @@ function App() {
   }
 
   const youtubeChannelLink = 'https://www.youtube.com/@wangle0'
-  const promoText = `[...]<br/> \
-      [...] ${formatLink('YouTube channel', youtubeChannelLink)}!`
+  const newSiteLink = 'https://caesardle.netlify.app'
+  const promoText = `This site will become inactive on Feb. 14. The game will be moved to ${formatLink(
+    `${newSiteLink}`,
+    newSiteLink
+  )} <br/> \
+      Click the Stats icon to migrate your stats. Subscribe to me on ${formatLink(
+        'YouTube',
+        youtubeChannelLink
+      )} for updates and new variants!`
 
   return (
     <div className="h-screen flex flex-col">
@@ -538,8 +545,8 @@ function App() {
         dailyPath={dailyPath}
         randomPath={randomPath}
       />
+      <PromoText text={promoText} />
       <CaesarSlider setShiftAmt={setShiftAmt} />
-      {/* <PromoText text={promoText} /> */}
       <div className="pt-2 px-1 pb-8 md:max-w-7xl w-full mx-auto sm:px-6 lg:px-8 flex flex-col grow">
         <div className="pb-6 grow">
           <Grid
